@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Patina Works – referencia galéria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1c1c1c; --ink:#f2f2f2; --muted:#a3a3a3;
+  --copper:#c26e55; --copper-ink:#ffffff;
+  --frame:#262626; --bar:#2f2f2f; --url:#1b1b1b; --urltext:#bdbdbd;
+  --dot:#4a4a4a; --shadow:rgba(0,0,0,.6);
+  color-scheme: dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#181818; --ink:#f2f2f2; --muted:#a3a3a3;
+    --frame:#2b2b2b; --bar:#333; --url:#1f1f1f; --dot:#4a4a4a; --shadow:rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#181818; --ink:#f2f2f2; --muted:#a3a3a3;
+  --frame:#2b2b2b; --bar:#333; --url:#1f1f1f; --dot:#4a4a4a; --shadow:rgba(0,0,0,.6);
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:Poppins,"Segoe UI",Helvetica,Arial,sans-serif;overflow-x:hidden}
+
+.gallery{
+  --w:clamp(220px, 32vw, 440px);
+  position:relative; width:100%; max-width:1500px; margin:0 auto;
+  padding:clamp(24px,5vw,56px) 0 28px;
+  user-select:none; -webkit-user-select:none;
+}
+.stage{
+  position:relative; height:calc(var(--w) * 1.36 + 40px);
+  perspective:1800px; perspective-origin:50% 45%;
+  touch-action:pan-y;
+}
+.slide{
+  position:absolute; left:50%; top:20px;
+  width:var(--w); margin-left:calc(var(--w) / -2);
+  transform-style:preserve-3d;
+  transition:transform .7s cubic-bezier(.22,.8,.24,1), opacity .5s ease, filter .5s ease;
+  cursor:pointer; will-change:transform;
+}
+.slide.is-active{cursor:default}
+.win{
+  background:var(--frame); border-radius:12px; overflow:hidden;
+  box-shadow:0 30px 60px -20px var(--shadow), 0 0 0 1px rgba(255,255,255,.05) inset;
+}
+.bar{display:flex; align-items:center; gap:10px; height:34px; padding:0 12px; background:var(--bar)}
+.lights{display:flex; gap:6px; flex:none}
+.lights i{width:10px;height:10px;border-radius:50%;display:block}
+.lights i:nth-child(1){background:#ff5f57}.lights i:nth-child(2){background:#febc2e}.lights i:nth-child(3){background:#28c840}
+.url{flex:1; min-width:0; height:20px; border-radius:6px; background:var(--url); color:var(--urltext);
+  font-size:11px; line-height:20px; padding:0 10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.view{height:calc(var(--w) * 1.3); overflow:hidden; background:#222; position:relative}
+.slide.is-active .view{overflow-y:auto; scrollbar-width:thin; scrollbar-color:#ffffff transparent}
+.view::-webkit-scrollbar{width:6px}
+.view::-webkit-scrollbar-track{background:transparent}
+.view::-webkit-scrollbar-thumb{background:#ffffff;border-radius:3px}
+.view img{display:block; width:100%; height:auto; pointer-events:none}
+.slide:not(.is-active) .view::after{content:""; position:absolute; inset:0; background:rgba(0,0,0,.18)}
+
+.controls{display:flex; align-items:center; justify-content:center; gap:22px; margin-top:8px}
+.nav{
+  width:44px;height:44px;border:0;padding:0;background:none;color:rgba(255,255,255,.45);
+  display:grid;place-items:center;cursor:pointer;transition:color .2s, transform .2s
+}
+.nav:hover{color:rgba(255,255,255,.85)} .nav:active{transform:scale(.92)}
+.nav svg{width:28px;height:28px}
+.dots{display:flex;gap:9px}
+.dots button{width:9px;height:9px;padding:0;border-radius:5px;border:0;background:var(--dot);cursor:pointer;transition:width .35s, background .35s}
+.dots button[aria-current="true"]{width:28px;background:var(--copper)}
+.caption{text-align:center;margin:18px auto 0;padding:0 20px;max-width:60ch}
+.caption h2{font-size:clamp(18px,2.2vw,24px);font-weight:700;margin:0 0 4px}
+.caption a{color:var(--copper);font-size:14px;text-decoration:none}
+.caption a:hover{text-decoration:underline}
+.hint{color:var(--muted);font-size:12px;margin-top:10px}
+:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
+
+@media (max-width:640px){
+  .gallery{--w:min(70vw, 300px)}
+  .stage{perspective:1100px}
+}
+@media (prefers-reduced-motion: reduce){ .slide{transition:none} }
+</style>
+</head>
+<body>
+<section class="gallery" aria-roledescription="carousel" aria-label="Weboldal referenciák">
+  <div class="stage" id="stage"></div>
+  <div class="controls">
+    <button class="nav" id="prev" aria-label="Előző oldal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="dots" id="dots" role="tablist"></div>
+    <button class="nav" id="next" aria-label="Következő oldal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
+</section>
+
+<script>
+const SLIDES = [
+  {title:"Cefrézés – tudástár", url:"palinkafozo.hu/cefrezes", img:"img/cefrezes.jpg"},
+  {title:"Lepárlási tanfolyam", url:"patina-works.com/course", img:"img/course.jpg"},
+  {title:"Patina Works főoldal", url:"distillingmachine.com", img:"img/patina.jpg"},
+  {title:"Totem 200L landing oldal", url:"distillingmachine.com/totem200", img:"img/totem200.jpg"},
+  {title:"Totem 100L termékoldal", url:"distillingmachine.com/totem100", img:"img/totem.jpg"}
+];
+
+const stage = document.getElementById('stage');
+const dotsEl = document.getElementById('dots');
+const n = SLIDES.length;
+let active = Math.floor(n/2);
+
+const els = SLIDES.map((s,i)=>{
+  const el = document.createElement('div');
+  el.className='slide';
+  el.setAttribute('role','group');
+  el.setAttribute('aria-label',`${i+1} / ${n}: ${s.title}`);
+  el.innerHTML = `<div class="win"><div class="bar"><span class="lights"><i></i><i></i><i></i></span><span class="url">${s.url}</span></div><div class="view" tabindex="-1"><img src="${s.img}" alt="${s.title} – képernyőkép" draggable="false"></div></div>`;
+  el.addEventListener('click',()=>{ if(i!==active && !dragMoved) go(i); });
+  stage.appendChild(el);
+  const d = document.createElement('button');
+  d.setAttribute('role','tab'); d.setAttribute('aria-label',s.title);
+  d.addEventListener('click',()=>go(i));
+  dotsEl.appendChild(d);
+  return el;
+});
+
+function offsetOf(i){ // shortest signed distance, looping
+  let o = i - active;
+  if(o > n/2) o -= n;
+  if(o < -n/2) o += n;
+  return o;
+}
+function layout(){
+  const w = els[0].offsetWidth;
+  const narrow = innerWidth < 640;
+  els.forEach((el,i)=>{
+    const o = offsetOf(i), a = Math.abs(o), s = Math.sign(o);
+    const x = s * (a===0 ? 0 : (narrow ? w*0.62 : w*0.78) + (a-1)*(narrow? w*0.32 : w*0.52));
+    const z = -a * (narrow ? 220 : 260);
+    const ry = -s * Math.min(a,2) * (a===1 ? 32 : 22);
+    el.style.transform = `translateX(${x}px) translateZ(${z}px) rotateY(${ry}deg)`;
+    el.style.zIndex = 100 - a;
+    el.style.opacity = a > 2 ? 0 : 1;
+    el.style.pointerEvents = a > 2 ? 'none' : 'auto';
+    el.classList.toggle('is-active', a===0);
+    el.setAttribute('aria-hidden', a===0 ? 'false':'true');
+  });
+  [...dotsEl.children].forEach((d,i)=>d.setAttribute('aria-current', i===active));
+}
+function go(i){ active = (i + n) % n; layout(); }
+document.getElementById('prev').onclick=()=>go(active-1);
+document.getElementById('next').onclick=()=>go(active+1);
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft') go(active-1);
+  if(e.key==='ArrowRight') go(active+1);
+});
+addEventListener('resize',layout);
+
+// swipe / drag
+let startX=null, startY=null, dragMoved=false;
+stage.addEventListener('pointerdown',e=>{ startX=e.clientX; startY=e.clientY; dragMoved=false; });
+stage.addEventListener('pointermove',e=>{ if(startX!==null && Math.abs(e.clientX-startX)>8) dragMoved=true; });
+stage.addEventListener('pointerup',e=>{
+  if(startX===null) return;
+  const dx=e.clientX-startX, dy=e.clientY-startY;
+  if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)) go(active + (dx<0?1:-1));
+  startX=null;
+  setTimeout(()=>dragMoved=false,0);
+});
+stage.addEventListener('pointercancel',()=>startX=null);
+
+layout();
+</script>
+</body>
+</html>
